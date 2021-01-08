@@ -1,5 +1,87 @@
-type Todo @model {
+type User @model 
+{
+    id: ID!
+    surveyAnswers: [SurveyAnswer!]! @connection
+    isPatient: Boolean
+}
+
+type Survey @model 
+{
   id: ID!
   name: String!
   description: String
+  duration: String
+  isStarted: Boolean!
+  # language: String!
+  items: [Item]!
+  # surveyAnswers: [SurveyAnswer] @connection(keyName: "bySurveyId", fields:"id") ?
+}
+
+type Item @model
+{
+ fieldId: String
+ question: Question!
+ values: [Value!]!
+
+}
+
+type Question @model {
+  text: String!
+}
+
+# type Question @model
+# {
+#   text: String!
+#   field: String!
+#   values: [Value]!
+# }
+
+type Value @model
+{
+  # question: Question!
+  value: Int!
+  text: String!
+  #question: Question!
+}
+
+interface Response {
+  updatedAt: String!
+}
+
+type StringResponse implements Response {
+  updatedAt: String!
+  value: String!
+}
+
+type IntResponse implements Response {
+  updatedAt: String!
+  value: Int!
+}
+
+type ArrayResponse implements Response {
+  updatedAt: String!
+  value: [Int!]!
+}
+
+enum ResponseType {
+  StringResponse
+  IntResponse
+  ArrayResponse
+}
+
+# type Response @model
+# {
+#   value: String!
+#   updatedAt: String!
+# }
+
+type SurveyAnswer @model
+# @auth(rules: [{ allow: owner }]) 
+# @key(name: "surveyAnswersByCreationDateIndex", fields: ["id", "createdAt"], queryField: "surveyAnswersByCreationDate")
+{
+  id: ID!
+  surveyId: ID!
+  responses: [ResponseType!]!
+  createdAt: String
+  completedAt: String
 }
